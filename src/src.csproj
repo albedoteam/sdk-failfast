@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>AlbedoTeam.Sdk.FailFast</AssemblyName>
+        <RootNamespace>AlbedoTeam.Sdk.FailFast</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AlbedoTeam.Sdk.ExceptionHandler" Version="1.0.0-CI-20210108-164230" />
+      <PackageReference Include="FluentValidation" Version="9.3.0" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    </ItemGroup>
+
+</Project>
