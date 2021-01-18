@@ -50,6 +50,10 @@ namespace AlbedoTeam.Sdk.FailFast
 
                 if (e.InnerException?.GetType() == typeof(ResourceExistsException))
                     errorResponse.SetConflict();
+                else if (e.InnerException?.GetType() == typeof(NotFoundException)) // notfound
+                    errorResponse.SetNotFound();
+                else if (e.InnerException?.GetType() == typeof(BadRequestException)) // bad request
+                    errorResponse.AddError(e.InnerException?.Message);
                 else
                     errorResponse.AddError("Ooooooooooooops :/ Um baita erro ocorreu!");
 

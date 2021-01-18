@@ -4,5 +4,6 @@
     {
         IResponse AddError(string message);
         void SetConflict();
+        void SetNotFound();
     }
 }

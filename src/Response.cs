@@ -26,7 +26,7 @@ namespace AlbedoTeam.Sdk.FailFast
 
         public bool HasError => Errors.Any();
 
-        public bool NotFound => Result == null;
+        public bool NotFound { get; private set; }
 
         public bool Conflict { get; private set; }
 
@@ -39,6 +39,11 @@ namespace AlbedoTeam.Sdk.FailFast
         public void SetConflict()
         {
             Conflict = true;
+        }
+
+        public void SetNotFound()
+        {
+            NotFound = true;
         }
     }
 }
