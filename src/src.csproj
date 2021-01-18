@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AlbedoTeam.Sdk.ExceptionHandler" Version="1.0.0-CI-20210108-164230" />
+      <PackageReference Include="AlbedoTeam.Sdk.ExceptionHandler" Version="1.0.0-CI-20210118-230628" />
       <PackageReference Include="FluentValidation" Version="9.3.0" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     </ItemGroup>
