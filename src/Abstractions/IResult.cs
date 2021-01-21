@@ -7,8 +7,8 @@
     //     void SetNotFound();
     // }
 
-    public interface IResponse
+    public interface IResult
     {
-        IResponse AddError(string message);
+        IResult AddError(string message);
     }
 }
