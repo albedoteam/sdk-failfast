@@ -1,6 +1,6 @@
 ﻿namespace AlbedoTeam.Sdk.FailFast
 {
-    public enum ResponseError
+    public enum FailureReason
     {
         InternalServerError,
         BadRequest,

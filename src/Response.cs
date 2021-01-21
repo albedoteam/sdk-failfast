@@ -51,13 +51,13 @@ namespace AlbedoTeam.Sdk.FailFast
     {
         private readonly IList<string> _messages = new List<string>();
 
-        public Response(ResponseError responseError, string errorMessage = null)
+        public Response(FailureReason failureReason, string errorMessage = null)
         {
-            ResponseResponseError = responseError;
+            FailureReason = failureReason;
 
             _messages.Add(string.IsNullOrWhiteSpace(errorMessage)
-                ? responseError.ToString()
-                : $"{responseError.ToString()} - {errorMessage}");
+                ? failureReason.ToString()
+                : $"{failureReason.ToString()} - {errorMessage}");
 
             Errors = new ReadOnlyCollection<string>(_messages);
         }
@@ -65,7 +65,7 @@ namespace AlbedoTeam.Sdk.FailFast
         public Response(TResult result)
         {
             Result = result;
-            ResponseResponseError = null;
+            FailureReason = null;
             Errors = new ReadOnlyCollection<string>(_messages);
         }
 
@@ -75,7 +75,7 @@ namespace AlbedoTeam.Sdk.FailFast
 
         public bool HasError => Errors.Any();
 
-        public ResponseError? ResponseResponseError { get; }
+        public FailureReason? FailureReason { get; }
 
         public IResponse AddError(string message)
         {
