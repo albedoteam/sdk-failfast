@@ -9,9 +9,9 @@ using MediatR;
 
 namespace AlbedoTeam.Sdk.FailFast
 {
-    public class FailFastRequestBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
-        where TResponse : class, IResponse, new()
+    public class FailFastRequestBehavior<TRequest, TResult> : IPipelineBehavior<TRequest, TResult>
+        where TRequest : IRequest<TResult>
+        where TResult : class, IResult, new()
     {
         private readonly IEnumerable<IValidator> _validators;
 
@@ -20,8 +20,8 @@ namespace AlbedoTeam.Sdk.FailFast
             _validators = validators;
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResponse> next)
+        public Task<TResult> Handle(TRequest request, CancellationToken cancellationToken,
+            RequestHandlerDelegate<TResult> next)
         {
             var context = new ValidationContext<TRequest>(request);
             var failures = _validators
@@ -35,7 +35,7 @@ namespace AlbedoTeam.Sdk.FailFast
                 : TryNext(next);
         }
 
-        private static Task<TResponse> TryNext(RequestHandlerDelegate<TResponse> next)
+        private static Task<TResult> TryNext(RequestHandlerDelegate<TResult> next)
         {
             try
             {
@@ -44,16 +44,16 @@ namespace AlbedoTeam.Sdk.FailFast
             }
             catch
             {
-                var errorResponse = new TResponse();
+                var errorResponse = new TResult();
                 errorResponse.AddError("Ooops! Um baita erro ocorreu, corra para as montanhas!!");
 
                 return Task.FromResult(errorResponse);
             }
         }
 
-        private static Task<TResponse> ValidationErrors(IEnumerable<ValidationFailure> failures)
+        private static Task<TResult> ValidationErrors(IEnumerable<ValidationFailure> failures)
         {
-            var errorResponse = new TResponse();
+            var errorResponse = new TResult();
 
             foreach (var failure in failures)
                 errorResponse.AddError(failure.ErrorMessage);
