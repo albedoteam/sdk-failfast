@@ -75,11 +75,16 @@ namespace AlbedoTeam.Sdk.FailFast
 
         public bool HasError => Errors.Any();
 
-        public FailureReason? FailureReason { get; }
+        public FailureReason? FailureReason { get; private set; }
 
         public IResult AddError(string message)
         {
             return this;
+        }
+
+        public void SetFailureReason(FailureReason failureReason)
+        {
+            FailureReason = failureReason;
         }
     }
 }

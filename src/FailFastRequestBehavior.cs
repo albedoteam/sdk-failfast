@@ -45,6 +45,7 @@ namespace AlbedoTeam.Sdk.FailFast
             catch
             {
                 var errorResponse = new TResult();
+                errorResponse.SetFailureReason(FailureReason.InternalServerError);
                 errorResponse.AddError("Ooops! Um baita erro ocorreu, corra para as montanhas!!");
 
                 return Task.FromResult(errorResponse);
@@ -54,7 +55,7 @@ namespace AlbedoTeam.Sdk.FailFast
         private static Task<TResult> ValidationErrors(IEnumerable<ValidationFailure> failures)
         {
             var errorResponse = new TResult();
-
+            errorResponse.SetFailureReason(FailureReason.BadRequest);
             foreach (var failure in failures)
                 errorResponse.AddError(failure.ErrorMessage);
 

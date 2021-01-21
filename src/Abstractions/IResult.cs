@@ -10,5 +10,6 @@
     public interface IResult
     {
         IResult AddError(string message);
+        void SetFailureReason(FailureReason failureReason);
     }
 }
