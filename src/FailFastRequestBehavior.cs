@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AlbedoTeam.Sdk.ExceptionHandler.Exceptions;
 using AlbedoTeam.Sdk.FailFast.Abstractions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -44,18 +42,10 @@ namespace AlbedoTeam.Sdk.FailFast
                 var interResult = next().Result;
                 return Task.FromResult(interResult);
             }
-            catch (Exception e)
+            catch
             {
                 var errorResponse = new TResponse();
-
-                if (e.InnerException?.GetType() == typeof(ResourceExistsException))
-                    errorResponse.SetConflict();
-                else if (e.InnerException?.GetType() == typeof(NotFoundException)) // notfound
-                    errorResponse.SetNotFound();
-                else if (e.InnerException?.GetType() == typeof(BadRequestException)) // bad request
-                    errorResponse.AddError(e.InnerException?.Message);
-                else
-                    errorResponse.AddError("Ooooooooooooops :/ Um baita erro ocorreu!");
+                errorResponse.AddError("Ooops! Um baita erro ocorreu, corra para as montanhas!!");
 
                 return Task.FromResult(errorResponse);
             }
@@ -65,7 +55,8 @@ namespace AlbedoTeam.Sdk.FailFast
         {
             var errorResponse = new TResponse();
 
-            foreach (var failure in failures) errorResponse.AddError(failure.ErrorMessage);
+            foreach (var failure in failures)
+                errorResponse.AddError(failure.ErrorMessage);
 
             return Task.FromResult(errorResponse);
         }
