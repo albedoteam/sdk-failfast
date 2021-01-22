@@ -4,27 +4,15 @@ using MediatR;
 
 namespace AlbedoTeam.Sdk.FailFast.Abstractions
 {
-    // public abstract class CommandHandler<TCommand, TResult> : IRequestHandler<TCommand, Response<TResult>>
-    //     where TCommand : IRequest<Response<TResult>>
-    //     where TResult : class, new()
-    // {
-    //     public async Task<Response<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
-    //     {
-    //         return new Response<TResult>(await Handle(request));
-    //     }
-    //
-    //     protected abstract Task<TResult> Handle(TCommand request);
-    // }
-
-    public abstract class CommandHandler<TCommand, TResult> : IRequestHandler<TCommand, Result<TResult>>
-        where TCommand : IRequest<Result<TResult>>
-        where TResult : class, new()
+    public abstract class CommandHandler<TCommand, TData> : IRequestHandler<TCommand, Result<TData>>
+        where TCommand : IRequest<Result<TData>>
+        where TData : class, new()
     {
-        public async Task<Result<TResult>> Handle(TCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TData>> Handle(TCommand request, CancellationToken cancellationToken)
         {
             return await Handle(request);
         }
 
-        protected abstract Task<Result<TResult>> Handle(TCommand request);
+        protected abstract Task<Result<TData>> Handle(TCommand request);
     }
 }
