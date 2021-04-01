@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-
-namespace AlbedoTeam.Sdk.FailFast.Abstractions
+﻿namespace AlbedoTeam.Sdk.FailFast.Abstractions
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+
     public abstract class EventSubscriber<TEvent> : INotificationHandler<TEvent>
         where TEvent : INotification
     {

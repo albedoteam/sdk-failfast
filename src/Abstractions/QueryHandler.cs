@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-
-namespace AlbedoTeam.Sdk.FailFast.Abstractions
+﻿namespace AlbedoTeam.Sdk.FailFast.Abstractions
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+
     public abstract class QueryHandler<TQuery, TData> : IRequestHandler<TQuery, Result<TData>>
         where TQuery : IRequest<Result<TData>>
         where TData : class, new()

@@ -1,9 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-
-namespace AlbedoTeam.Sdk.FailFast.Abstractions
+﻿namespace AlbedoTeam.Sdk.FailFast.Abstractions
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+
     public abstract class CommandHandler<TCommand, TData> : IRequestHandler<TCommand, Result<TData>>
         where TCommand : IRequest<Result<TData>>
         where TData : class, new()
