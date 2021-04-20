@@ -27,7 +27,7 @@
                 .GetCustomAttributes(request.GetType())
                 .FirstOrDefault(a => a is CacheAttribute);
 
-            if (cacheAttribute is null)
+            if (cacheAttribute is null || request is ICachedRequest<TResult> {NoCache: true})
                 return next();
 
             var cached = _cache.TryGet<TRequest, TResult>(request, out var cachedResult);
