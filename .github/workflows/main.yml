@@ -12,7 +12,7 @@ jobs:
       name: Read version
       runs-on: ubuntu-latest
       steps:      
-      - uses: kzrnm/get-net-sdk-project-versions-action@v1
+      - uses: kzrnm/get-net-sdk-project-versions-action@v1.1.2
         id: get-version
         with:
           proj-path: src/src.csproj
