@@ -50,6 +50,7 @@ jobs:
           package/$namespace.$version.nupkg \
           --source $source \
           --api-key $api_key \
+          --skip-duplicate \
         env:
           version: ${{ steps.version-checker.outputs.version }}
           namespace: ${{ secrets.PROJECT_NAMESPACE }}
