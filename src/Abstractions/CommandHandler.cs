@@ -10,9 +10,14 @@
     {
         public async Task<Result<TData>> Handle(TCommand request, CancellationToken cancellationToken)
         {
-            return await Handle(request);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return await Task.FromResult(new Result<TData>(FailureReason.RequestCancelled));
+            }
+
+            return await HandleCommand(request, cancellationToken);
         }
 
-        protected abstract Task<Result<TData>> Handle(TCommand request);
+        protected abstract Task<Result<TData>> HandleCommand(TCommand request, CancellationToken cancellationToken);
     }
 }
