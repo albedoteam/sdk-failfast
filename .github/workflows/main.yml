@@ -12,6 +12,8 @@ jobs:
       name: Read version
       runs-on: ubuntu-latest
       steps:
+      - uses: actions/checkout@master
+        name: Checkout
       - run: ls -a
       - uses: kzrnm/get-net-sdk-project-versions-action@v1.1.2
         id: get-version
