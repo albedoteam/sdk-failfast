@@ -20,8 +20,7 @@
             _cache = cache;
         }
 
-        public Task<TResult> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResult> next)
+        public Task<TResult> Handle(TRequest request, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
             {
