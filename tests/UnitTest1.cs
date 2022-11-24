@@ -1,7 +1,7 @@
-using Xunit;
-
 namespace AlbedoTeam.Sdk.FailFast.Tests
 {
+    using Xunit;
+
     public class UnitTest1
     {
         [Fact]

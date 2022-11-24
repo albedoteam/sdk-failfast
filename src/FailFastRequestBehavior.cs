@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AlbedoTeam.Sdk.FailFast.Abstractions;
-using FluentValidation;
-using FluentValidation.Results;
-using MediatR;
-
-namespace AlbedoTeam.Sdk.FailFast
+﻿namespace AlbedoTeam.Sdk.FailFast
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Abstractions;
+    using FluentValidation;
+    using FluentValidation.Results;
+    using MediatR;
+
     public class FailFastRequestBehavior<TRequest, TResult> : IPipelineBehavior<TRequest, TResult>
         where TRequest : IRequest<TResult>
         where TResult : class, IResult, new()

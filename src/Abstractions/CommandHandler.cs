@@ -1,18 +1,23 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-
-namespace AlbedoTeam.Sdk.FailFast.Abstractions
+﻿namespace AlbedoTeam.Sdk.FailFast.Abstractions
 {
+    using System.Threading;
+    using System.Threading.Tasks;
+    using MediatR;
+
     public abstract class CommandHandler<TCommand, TData> : IRequestHandler<TCommand, Result<TData>>
         where TCommand : IRequest<Result<TData>>
         where TData : class, new()
     {
         public async Task<Result<TData>> Handle(TCommand request, CancellationToken cancellationToken)
         {
-            return await Handle(request);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return await Task.FromResult(new Result<TData>(FailureReason.RequestCancelled));
+            }
+
+            return await HandleCommand(request, cancellationToken);
         }
 
-        protected abstract Task<Result<TData>> Handle(TCommand request);
+        protected abstract Task<Result<TData>> HandleCommand(TCommand request, CancellationToken cancellationToken);
     }
 }

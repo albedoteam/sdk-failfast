@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using AlbedoTeam.Sdk.FailFast.Abstractions;
-
-namespace AlbedoTeam.Sdk.FailFast
+﻿namespace AlbedoTeam.Sdk.FailFast
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using Abstractions;
+
     public class Result<TData> : IResult
     {
         private readonly IList<string> _messages = new List<string>();
@@ -26,15 +26,32 @@ namespace AlbedoTeam.Sdk.FailFast
             Errors = new ReadOnlyCollection<string>(_messages);
         }
 
+        public Result(FailureReason failureReason, params string[] errorMessages)
+        {
+            FailureReason = failureReason;
+
+            if (errorMessages == null)
+            {
+                return;
+            }
+
+            foreach (var errorMessage in errorMessages)
+            {
+                _messages.Add(errorMessage);
+            }
+
+            Errors = new ReadOnlyCollection<string>(_messages);
+        }
+
         public Result(TData data)
         {
             Data = data;
             Errors = new ReadOnlyCollection<string>(_messages);
         }
 
-        public IEnumerable<string> Errors { get; }
+        public IEnumerable<string> Errors { get; set; }
 
-        public TData Data { get; }
+        public TData Data { get; set; }
 
         public bool HasError => Errors.Any();
 
