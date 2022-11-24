@@ -1,0 +1,15 @@
+name: Version Checker
+description: Check the version of the .csproj file
+outputs:
+  version: 
+    description: Version
+    value: ${{ steps.get-version.outputs.version }}
+runs:
+  using: "composite"
+  steps:
+  
+  - name: Check Project Version
+    uses: kzrnm/get-net-sdk-project-versions-action@v1.1.2
+    id: get-version
+    with:
+      proj-path: src/src.csproj
