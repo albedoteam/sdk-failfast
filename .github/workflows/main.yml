@@ -11,7 +11,8 @@ jobs:
   get-version:
       name: Read version
       runs-on: ubuntu-latest
-      steps:      
+      steps:
+      - run: echo "ls"
       - uses: kzrnm/get-net-sdk-project-versions-action@v1.1.2
         id: get-version
         with:
