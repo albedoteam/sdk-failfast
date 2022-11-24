@@ -20,8 +20,7 @@
             _validators = validators;
         }
 
-        public Task<TResult> Handle(TRequest request, CancellationToken cancellationToken,
-            RequestHandlerDelegate<TResult> next)
+        public Task<TResult> Handle(TRequest request, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
         {
             var context = new ValidationContext<TRequest>(request);
             var failures = _validators
