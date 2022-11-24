@@ -1,33 +1,27 @@
 name: Release Creator
 
 on:
-  push: 
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: Version
     
 jobs:
   release-creator:
     name: Release Creator
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v3
-      
-    - name: Check Version
-      id: version-checker
-      uses: ./.github/actions/version-checker
-      
-    - name: Create Timestamp
-      id: timestamp
-      run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
-
+    
     - name: Create tag and GitHub release
+      if: ${{ github.ref == 'main' }}
       id: create_tag_and_release
       uses: actions/create-release@master
       env:
         GITHUB_TOKEN: ${{ github.token }}
       with:
-        tag_name: ${{ steps.version-checker.outputs.version }}.${{ steps.timestamp.outputs.timestamp }}
-        release_name: v${{ steps.version-checker.outputs.version }}
+        tag_name: ${{ github.event.inputs.version }}
+        release_name: v${{ github.event.inputs.version }}
         draft: false
         prerelease: false
