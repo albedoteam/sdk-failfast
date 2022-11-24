@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - rc
+      - main
+      
+jobs:
+  build:
+    name: Build, Pack and Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        
+      - name: Add GitHub NuGet Source
+        run: dotnet nuget add source $source -n github --username albedocodes --password $api_key --store-password-in-clear-text
+        env:
+          source: ${{ secrets.NUGET_SOURCE }}
+          api_key: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Restore Packages
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --configuration $configuration --no-restore
+        env:
+          configuration: ${{ github.ref_name == 'rc' && 'Debug' || 'Release' }}
+
+      - name: Version Checker
+        uses: ./.github/actions/version-checker
+        id: version-checker
+        
+      - name: Pack Release
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          dotnet pack --no-build --no-restore \
+          --output package \
+          --configuration Release \
+        
+      - name: Create Timestamp
+        if: ${{ github.ref_name == 'rc' }}
+        id: timestamp
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+        
+      - name: Pack RC
+        if: ${{ github.ref_name == 'rc' }}
+        run: | 
+          dotnet pack --no-build --no-restore \
+          --output package \
+          --configuration Debug \
+          /p:Version=$version.$timestamp-rc \
+        env:
+          version: ${{ steps.version-checker.outputs.version }}
+          timestamp: ${{ steps.timestamp.outputs.timestamp }}
+        
+      - name: Create Tag and Release
+        uses: ./.github/actions/release-creator
+        if: ${{ github.ref_name == 'main' }}
+        with:
+          version: ${{ steps.version-checker.outputs.version }}
+          github_token: ${{ github.token }}
+
+      - name: Push Release
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          dotnet nuget push \
+          package/$namespace.$version.nupkg \
+          --source $source \
+          --api-key $api_key \
+        env:
+          version: ${{ steps.version-checker.outputs.version }}
+          namespace: ${{ secrets.PROJECT_NAMESPACE }}
+          source: ${{ secrets.NUGET_SOURCE }}
+          api_key: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Push RC
+        if: ${{ github.ref_name == 'rc' }}
+        run: |
+          dotnet nuget push \
+          package/$namespace.$version.$timestamp-rc.nupkg \
+          --source $source \
+          --api-key $api_key \
+        env:
+          version: ${{ steps.version-checker.outputs.version }}
+          timestamp: ${{ steps.timestamp.outputs.timestamp }}
+          namespace: ${{ secrets.PROJECT_NAMESPACE }}
+          source: ${{ secrets.NUGET_SOURCE }}
+          api_key: ${{ secrets.NUGET_API_KEY }}
+        
+

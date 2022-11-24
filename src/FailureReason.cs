@@ -5,6 +5,7 @@
         InternalServerError,
         BadRequest,
         Conflict,
-        NotFound
+        NotFound,
+        RequestCancelled
     }
 }

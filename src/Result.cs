@@ -26,6 +26,23 @@
             Errors = new ReadOnlyCollection<string>(_messages);
         }
 
+        public Result(FailureReason failureReason, params string[] errorMessages)
+        {
+            FailureReason = failureReason;
+
+            if (errorMessages == null)
+            {
+                return;
+            }
+
+            foreach (var errorMessage in errorMessages)
+            {
+                _messages.Add(errorMessage);
+            }
+
+            Errors = new ReadOnlyCollection<string>(_messages);
+        }
+
         public Result(TData data)
         {
             Data = data;

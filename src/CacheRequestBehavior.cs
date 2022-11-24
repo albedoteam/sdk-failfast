@@ -23,11 +23,18 @@
         public Task<TResult> Handle(TRequest request, CancellationToken cancellationToken,
             RequestHandlerDelegate<TResult> next)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                var cancelled = new TResult();
+                cancelled.SetFailureReason(FailureReason.RequestCancelled);
+                return Task.FromResult(cancelled);
+            }
+
             var cacheAttribute = Attribute
                 .GetCustomAttributes(request.GetType())
                 .FirstOrDefault(a => a is CacheAttribute);
 
-            if (cacheAttribute is null || request is ICachedRequest<TResult> {NoCache: true})
+            if (cacheAttribute is null || request is ICachedRequest<TResult> { NoCache: true })
                 return next();
 
             var cached = _cache.TryGet<TRequest, TResult>(request, out var cachedResult);
@@ -35,7 +42,7 @@
                 return Task.FromResult(cachedResult);
 
             var innerResult = next().Result;
-            _cache.Set(request, innerResult, ((CacheAttribute) cacheAttribute).ExpirationInSeconds);
+            _cache.Set(request, innerResult, ((CacheAttribute)cacheAttribute).ExpirationInSeconds);
             return Task.FromResult(innerResult);
         }
     }
