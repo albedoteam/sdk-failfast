@@ -12,7 +12,7 @@ jobs:
       name: Read version
       runs-on: ubuntu-latest
       steps:
-      - run: ls
+      - run: ls -a
       - uses: kzrnm/get-net-sdk-project-versions-action@v1.1.2
         id: get-version
         with:
