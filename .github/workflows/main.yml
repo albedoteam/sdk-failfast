@@ -15,7 +15,7 @@ jobs:
       - uses: kzrnm/get-net-sdk-project-versions-action@v1
         id: get-version
         with:
-          proj-path: src/src.csproj
+          proj-path: src
       - run: echo "${{steps.get-version.outputs.version}}"
       - name: Create timestamp
         id: timestamp
