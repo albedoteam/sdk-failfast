@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>AlbedoTeam.Sdk.FailFast</AssemblyName>
         <RootNamespace>AlbedoTeam.Sdk.FailFast</RootNamespace>
+		<Version>1.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
