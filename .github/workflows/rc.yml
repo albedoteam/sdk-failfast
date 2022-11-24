@@ -1,13 +1,13 @@
-name: CI
+name: CI - RC
 
 on:
   push:
     branches:
-      - main
+      - rc
       
 jobs:
   build:
-    name: Build, Pack and Push - Release
+    name: Build, Pack and Push - RC
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,32 +26,37 @@ jobs:
         run: dotnet restore
         
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Debug --no-restore
 
       - name: Version Checker
         uses: ./.github/actions/version-checker
         id: version-checker
         
+      - name: Create Timestamp
+        id: timestamp
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+        
       - name: Pack
-        run: |
+        run: | 
           dotnet pack --no-build --no-restore \
           --output package \
-          --configuration Release \
-        
-      - name: Create Tag and Release
-        uses: ./.github/actions/release-creator
-        with:
+          --configuration Debug \
+          /p:Version=$version.$timestamp-rc \
+        env:
           version: ${{ steps.version-checker.outputs.version }}
-          github_token: ${{ github.token }}
-
+          timestamp: ${{ steps.timestamp.outputs.timestamp }}
+        
       - name: Push
         run: |
           dotnet nuget push \
-          package/$namespace.$version.nupkg \
+          package/$namespace.$version.$timestamp-rc.nupkg \
           --source $source \
           --api-key $api_key \
         env:
           version: ${{ steps.version-checker.outputs.version }}
+          timestamp: ${{ steps.timestamp.outputs.timestamp }}
           namespace: ${{ secrets.PROJECT_NAMESPACE }}
           source: ${{ secrets.NUGET_SOURCE }}
           api_key: ${{ secrets.NUGET_API_KEY }}
+        
+
