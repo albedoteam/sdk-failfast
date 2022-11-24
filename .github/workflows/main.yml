@@ -11,22 +11,25 @@ jobs:
   get-version:
       name: Read version
       runs-on: ubuntu-latest
-      steps:
-        - name: Read version
-          id: read-version
-          uses: yaos/csproj-version-reader@master
-          with:
-            FilePath: ./src/src.csproj
-        - name: Create tag and GitHub release
-          id: create_tag_and_release
-          uses: actions/create-release@master
-          env:
-            GITHUB_TOKEN: ${{ github.token }}
-          with:
-            tag_name: v${{ steps.read-version.outputs.version }}
-            release_name: v${{ steps.read-version.outputs.version }}
-            draft: false
-            prerelease: false  
+      steps:      
+      - uses: kzrnm/get-net-sdk-project-versions-action@v1
+        id: get-version
+        with:
+          proj-path: src/src.csproj
+      - run: echo "${{steps.get-version.outputs.version}}"
+      - name: Create timestamp
+        id: timestamp
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
+      - name: Create tag and GitHub release
+        id: create_tag_and_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ steps.read-version.outputs.version }}.${{ steps.timestamp.outputs.timestamp }}-rc
+          release_name: v${{ steps.read-version.outputs.version }}
+          draft: false
+          prerelease: false  
             
 #  build:
 #    runs-on: ubuntu-latest
