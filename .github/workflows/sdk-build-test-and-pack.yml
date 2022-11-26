@@ -76,7 +76,7 @@ jobs:
         --configuration $configuration \
         /p:Version=$version \
       env:
-        version: ${{ steps.nupkg_file_version.outputs.version }}
+        version: ${{ steps.nupkg_file.outputs.version }}
         configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
       
     - name: publish cicd artifacts

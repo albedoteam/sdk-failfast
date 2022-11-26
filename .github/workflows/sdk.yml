@@ -28,7 +28,7 @@ jobs:
     secrets: inherit
   push-package:
     name: push package
-    needs: [build-test-pack]
+    needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
       nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
