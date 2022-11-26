@@ -1,0 +1,29 @@
+on:
+  workflow_call:
+    secrets:
+      PROJECT_NAMESPACE:
+        required: true
+      NUGET_SOURCE:
+        required: true
+      NUGET_API_KEY:
+        required: true
+    inputs:
+      version: 
+        type: string
+        required: true
+        description: 'ci project version'
+
+jobs:
+  create-tag-release:
+    name: create tag and release
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: create tag and release
+      uses: actions/release-creator@v1
+      with:
+        version: ${{ inputs.version }}
+        github_token: ${{ github.token }}
