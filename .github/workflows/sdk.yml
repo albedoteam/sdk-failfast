@@ -15,7 +15,7 @@ jobs:
   set-ci-configuration:
     name: set ci configuration
     if: ${{ github.event_name == 'push' }}
-    uses: albedoteam/.github/workflows/set-ci-configuration@main
+    uses: albedoteam/.github/workflows/set-ci-configuration.yml@main
     secrets: inherit
   build-test-pack:
     name: build, test and pack
