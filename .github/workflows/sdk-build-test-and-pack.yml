@@ -10,15 +10,12 @@ on:
         required: true
     inputs:
       version: 
-        type: string
         required: false
         description: 'ci project version'
       timestamp: 
-        type: string
         required: false
         description: 'ci project timestamp'
       artifact_path_nupkg:
-        type: string
         required: false
         description: 'ci project path to nupkg files'
     outputs:
