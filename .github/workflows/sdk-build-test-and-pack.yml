@@ -59,8 +59,12 @@ jobs:
       run: dotnet test --verbosity normal
   
     - name: set nupkg file version
-      run: echo "version=${{ inputs.version }}${{ github.ref != 'main' && ('-' + inputs.timestamp) || '' }}" >> $GITHUB_OUTPUT
+      if: ${{ github.event_name == 'push' }}
+      run: echo "version=$version${{ github.ref != 'main' && $rc || '' }}" >> $GITHUB_OUTPUT
       id: nupkg_file
+      env:
+        version: ${{ inputs.version }}
+        rc: -${{ inputs.timestamp }}
 
     - name: dotnet pack
       if: ${{ github.event_name == 'push' }}
