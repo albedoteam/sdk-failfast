@@ -1,0 +1,44 @@
+name: Albedo Team CI SDK
+
+on:
+  push: 
+    branches: [rc, main]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  build-and-test-on-pr:
+    name: build and test on pr
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: albedoteam/.github/workflows/sdk-build-test-and-pack.yml@main
+    secrets: inherit
+  set-ci-configuration:
+    name: set ci configuration
+    if: ${{ github.event_name == 'push' }}
+    uses: albedoteam/.github/workflows/set-ci-configuration@main
+    secrets: inherit
+  build-test-pack:
+    name: build, test and pack
+    needs: [set-ci-configuration]
+    uses: albedoteam/.github/workflows/sdk-build-test-and-pack.yml@main
+    with:
+      version: ${{ needs.set-ci-configuration.outputs.version }}
+      timestamp: ${{ needs.set-ci-configuration.outputs.timestamp }}
+      artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
+    secrets: inherit
+  push-package:
+    name: push package
+    needs: [build-test-pack]
+    uses: albedoteam/.github/workflows/push-package.yml@main
+    with:
+      nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
+      artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
+    secrets: inherit
+  create-release:
+    name: create release
+    if: ${{ github.ref_name == 'main' }}
+    needs: [push-package]
+    uses: albedoteam/.github/workflows/create-release.yml@main
+    with:
+      version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
+    secrets: inherit
