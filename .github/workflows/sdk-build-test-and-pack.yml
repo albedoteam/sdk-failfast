@@ -23,7 +23,6 @@ on:
         description: 'ci project path to nupkg files'
     outputs:
       nupkg_file_version: 
-        type: string
         description: 'ci project nupkg file version'
         value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
 
@@ -60,11 +59,11 @@ jobs:
   
     - name: set nupkg file version
       if: ${{ github.event_name == 'push' }}
-      run: echo "version=$version${{ github.ref != 'main' && $rc || '' }}" >> $GITHUB_OUTPUT
+      run: echo "version=$version$rc" >> $GITHUB_OUTPUT
       id: nupkg_file
       env:
         version: ${{ inputs.version }}
-        rc: -${{ inputs.timestamp }}
+        rc: ${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
 
     - name: dotnet pack
       if: ${{ github.event_name == 'push' }}

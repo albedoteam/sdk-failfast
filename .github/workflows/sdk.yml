@@ -4,7 +4,7 @@ on:
   push: 
     branches: [rc, main]
   pull_request:
-    types: [opened, reopened]
+    branches: [rc, main]
 
 jobs:
   build-and-test-on-pr:
