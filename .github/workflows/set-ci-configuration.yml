@@ -45,5 +45,5 @@ jobs:
       name: checkout
 
     - name: version checker
-      uses: actions/version-checker
+      uses: actions/version-checker@main
       id: version-checker

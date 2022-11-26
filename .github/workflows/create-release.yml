@@ -23,7 +23,7 @@ jobs:
       name: checkout
 
     - name: create tag and release
-      uses: actions/release-creator
+      uses: actions/release-creator@main
       with:
         version: ${{ inputs.version }}
         github_token: ${{ github.token }}
