@@ -4,7 +4,7 @@ on:
   push: 
     branches: [rc, main]
   pull_request:
-    types: [opened, reopened]
+    branches: [rc, main]
 
 jobs:
   build-and-test-on-pr:
@@ -28,7 +28,7 @@ jobs:
     secrets: inherit
   push-package:
     name: push package
-    needs: [build-test-pack]
+    needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
       nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}

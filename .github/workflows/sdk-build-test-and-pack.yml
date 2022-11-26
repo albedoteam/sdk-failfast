@@ -11,20 +11,23 @@ on:
     inputs:
       version: 
         type: string
+        default: ''
         required: false
         description: 'ci project version'
       timestamp: 
         type: string
+        default: ''
         required: false
         description: 'ci project timestamp'
       artifact_path_nupkg:
         type: string
+        default: ''
         required: false
         description: 'ci project path to nupkg files'
-      outputs:
-        nupkg_file_version: 
-          description: 'ci project nupkg file version'
-          value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
+    outputs:
+      nupkg_file_version: 
+        description: 'ci project nupkg file version'
+        value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
 
 jobs:
   build-and-test:
@@ -58,8 +61,12 @@ jobs:
       run: dotnet test --verbosity normal
   
     - name: set nupkg file version
-      run: echo "version=${{ inputs.version }}${{ github.ref != 'main' && ('-' + inputs.timestamp) || '' }}" >> $GITHUB_OUTPUT
+      if: ${{ github.event_name == 'push' }}
+      run: echo "version=$version$rc" >> $GITHUB_OUTPUT
       id: nupkg_file
+      env:
+        version: ${{ inputs.version }}
+        rc: ${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
 
     - name: dotnet pack
       if: ${{ github.event_name == 'push' }}
@@ -69,7 +76,7 @@ jobs:
         --configuration $configuration \
         /p:Version=$version \
       env:
-        version: ${{ steps.nupkg_file_version.outputs.version }}
+        version: ${{ steps.nupkg_file.outputs.version }}
         configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
       
     - name: publish cicd artifacts

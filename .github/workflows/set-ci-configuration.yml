@@ -18,7 +18,7 @@ on:
         value: ${{ jobs.version-checker.outputs.version }}
       timestamp: 
         description: 'ci project timestamp'
-        value: ${{ steps.version-checker.outputs.timestamp }}
+        value: ${{ jobs.version-checker.outputs.timestamp }}
       artifact_path_cicd: 
         description: 'ci project cicd artifact'
         value: ${{ jobs.version-checker.outputs.version }}
@@ -47,43 +47,3 @@ jobs:
     - name: version checker
       uses: actions/version-checker@v1
       id: version-checker
-   
-  deploy-to-main:
-    name: deploy to main
-    needs: [ version-checker, build-and-test ]
-    runs-on: ubuntu-latest
-    environment:
-      name: main
-      url: https://a.b.com
-    steps:
-
-    - uses: actions/checkout@v3
-      name: checkout
-
-    - name: download cicd artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ needs.version-checker.outputs.artifact_path_cicd }}
-
-    - name: download bin artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ needs.version-checker.outputs.artifact_path_bin }}
-
-    - name: test
-      run: echo 'ls -a'
-
-  create-tag-release:
-    name: create tag and release
-    needs: [ version-checker, deploy-to-main ]
-    runs-on: ubuntu-latest
-    steps:
-
-    - uses: actions/checkout@v3
-      name: checkout
-
-    - name: create tag and release
-      uses: actions/release-creator@v1
-      with:
-        version: ${{ needs.version-checker.outputs.version }}
-        github_token: ${{ github.token }}
