@@ -14,18 +14,23 @@ on:
         required: true
     outputs:
       version: 
+        type: string
         description: 'ci project version'
         value: ${{ jobs.version-checker.outputs.version }}
       timestamp: 
+        type: string
         description: 'ci project timestamp'
         value: ${{ steps.version-checker.outputs.timestamp }}
       artifact_path_cicd: 
+        type: string
         description: 'ci project cicd artifact'
         value: ${{ jobs.version-checker.outputs.version }}
       artifact_path_bin: 
+        type: string
         description: 'ci project bin artifact'
         value: ${{ jobs.version-checker.outputs.version }}
       artifact_path_nupkg: 
+        type: string
         description: 'ci project nupkg artifact'
         value: ${{ jobs.version-checker.outputs.version }}
 

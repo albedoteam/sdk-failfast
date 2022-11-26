@@ -21,10 +21,11 @@ on:
         type: string
         required: false
         description: 'ci project path to nupkg files'
-      outputs:
-        nupkg_file_version: 
-          description: 'ci project nupkg file version'
-          value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
+    outputs:
+      nupkg_file_version: 
+        type: string
+        description: 'ci project nupkg file version'
+        value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
 
 jobs:
   build-and-test:
