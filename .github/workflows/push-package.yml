@@ -1,0 +1,45 @@
+ 
+on:
+  workflow_call:
+    secrets:
+      PROJECT_NAMESPACE:
+        required: true
+      NUGET_SOURCE:
+        required: true
+      NUGET_API_KEY:
+        required: true
+    inputs:
+      nupkg_file_version: 
+        type: string
+        required: true
+        description: 'ci nupkg file version'
+      artifact_path_nupkg:
+        type: string
+        required: true
+        description: 'ci project path to nupkg files'
+
+  push:
+    name: push
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: setup .net
+      uses: actions/setup-dotnet@v3
+
+    - name: download cicd artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact_path_nupkg }}
+
+    - name: dotnet nuget push
+      run: |
+        dotnet nuget push \
+        package/$namespace.$version.nupkg \
+        --source $source \
+        --api-key $api_key \
+        --skip-duplicate \
+      env:
+        version: ${{ inputs.nupkg_file_version }}
+        namespace: ${{ secrets.PROJECT_NAMESPACE }}
+        source: ${{ secrets.NUGET_SOURCE }}
+        api_key: ${{ secrets.NUGET_API_KEY }}

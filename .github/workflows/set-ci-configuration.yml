@@ -1,0 +1,89 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+on:
+  workflow_call:
+    secrets:
+      PROJECT_NAMESPACE:
+        required: true
+      NUGET_SOURCE:
+        required: true
+      NUGET_API_KEY:
+        required: true
+    outputs:
+      version: 
+        description: 'ci project version'
+        value: ${{ jobs.version-checker.outputs.version }}
+      timestamp: 
+        description: 'ci project timestamp'
+        value: ${{ steps.version-checker.outputs.timestamp }}
+      artifact_path_cicd: 
+        description: 'ci project cicd artifact'
+        value: ${{ jobs.version-checker.outputs.version }}
+      artifact_path_bin: 
+        description: 'ci project bin artifact'
+        value: ${{ jobs.version-checker.outputs.version }}
+      artifact_path_nupkg: 
+        description: 'ci project nupkg artifact'
+        value: ${{ jobs.version-checker.outputs.version }}
+
+jobs:
+  version-checker:
+    name: check project version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version-checker.outputs.version }}
+      timestamp: ${{ steps.version-checker.outputs.timestamp }}
+      artifact_path_cicd: ${{ secrets.PROJECT_NAMESPACE }}_${{ github.ref_name }}_${{ steps.version-checker.outputs.version }}_${{ steps.version-checker.outputs.timestamp }}_cicd
+      artifact_path_bin: ${{ secrets.PROJECT_NAMESPACE }}_${{ github.ref_name }}_${{ steps.version-checker.outputs.version }}_${{ steps.version-checker.outputs.timestamp }}_bin
+      artifact_path_nupkg: ${{ secrets.PROJECT_NAMESPACE }}_${{ github.ref_name }}_${{ steps.version-checker.outputs.version }}_${{ steps.version-checker.outputs.timestamp }}_nupkg
+    steps:
+    
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: version checker
+      uses: actions/version-checker@v1
+      id: version-checker
+   
+  deploy-to-main:
+    name: deploy to main
+    needs: [ version-checker, build-and-test ]
+    runs-on: ubuntu-latest
+    environment:
+      name: main
+      url: https://a.b.com
+    steps:
+
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: download cicd artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ needs.version-checker.outputs.artifact_path_cicd }}
+
+    - name: download bin artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ needs.version-checker.outputs.artifact_path_bin }}
+
+    - name: test
+      run: echo 'ls -a'
+
+  create-tag-release:
+    name: create tag and release
+    needs: [ version-checker, deploy-to-main ]
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: create tag and release
+      uses: actions/release-creator@v1
+      with:
+        version: ${{ needs.version-checker.outputs.version }}
+        github_token: ${{ github.token }}

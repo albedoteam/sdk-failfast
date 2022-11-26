@@ -1,0 +1,81 @@
+
+on:
+  workflow_call:
+    secrets:
+      PROJECT_NAMESPACE:
+        required: true
+      NUGET_SOURCE:
+        required: true
+      NUGET_API_KEY:
+        required: true
+    inputs:
+      version: 
+        type: string
+        required: false
+        description: 'ci project version'
+      timestamp: 
+        type: string
+        required: false
+        description: 'ci project timestamp'
+      artifact_path_nupkg:
+        type: string
+        required: false
+        description: 'ci project path to nupkg files'
+      outputs:
+        nupkg_file_version: 
+          description: 'ci project nupkg file version'
+          value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
+
+jobs:
+  build-and-test:
+    name: build and test
+    runs-on: ubuntu-latest
+    outputs:
+      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}
+    steps:
+
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: setup .net
+      uses: actions/setup-dotnet@v3
+
+    - name: dotnet nuget add source github.com/albedoteam
+      run: dotnet nuget add source $source -n github --username albedocodes --password $api_key --store-password-in-clear-text
+      env:
+        source: ${{ secrets.NUGET_SOURCE }}
+        api_key: ${{ secrets.NUGET_API_KEY }}
+
+    - run: dotnet restore
+      name: dotnet restore
+
+    - name: dotnet build
+      run: dotnet build --configuration $configuration --no-restore
+      env:
+        configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
+      
+    - name: dotnet test
+      run: dotnet test --verbosity normal
+  
+    - name: set nupkg file version
+      run: echo "version=${{ inputs.version }}${{ github.ref != 'main' && ('-' + inputs.timestamp) || '' }}" >> $GITHUB_OUTPUT
+      id: nupkg_file
+
+    - name: dotnet pack
+      if: ${{ github.event_name == 'push' }}
+      run: | 
+        dotnet pack --no-build --no-restore \
+        --output package \
+        --configuration $configuration \
+        /p:Version=$version \
+      env:
+        version: ${{ steps.nupkg_file_version.outputs.version }}
+        configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
+      
+    - name: publish cicd artifacts
+      if: ${{ github.event_name == 'push' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.artifact_path_nupkg }}
+        path: |
+          package
