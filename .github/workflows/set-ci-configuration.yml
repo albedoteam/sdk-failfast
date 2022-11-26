@@ -18,7 +18,7 @@ on:
         value: ${{ jobs.version-checker.outputs.version }}
       timestamp: 
         description: 'ci project timestamp'
-        value: ${{ steps.version-checker.outputs.timestamp }}
+        value: ${{ jobs.version-checker.outputs.timestamp }}
       artifact_path_cicd: 
         description: 'ci project cicd artifact'
         value: ${{ jobs.version-checker.outputs.version }}
