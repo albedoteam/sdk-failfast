@@ -15,7 +15,7 @@ jobs:
   set-ci-configuration:
     name: set ci configuration
     if: ${{ github.event_name == 'push' }}
-    uses: ./.github/workflows/set-ci-configuration
+    uses: ./.github/workflows/set-ci-configuration.yml
     secrets: inherit
   build-test-pack:
     name: build, test and pack
