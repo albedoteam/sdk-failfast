@@ -58,8 +58,8 @@ jobs:
       run: echo "version=$version$rc" >> $GITHUB_OUTPUT
       id: nupkg_file
       env:
-        version: ${{ inputs.version }}
-        rc: ${{ github.ref_name != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
+        version: ${{ needs.set-ci-configuration.outputs.version }}
+        rc: ${{ github.ref_name != 'main' && format('.{0}-{1}', needs.set-ci-configuration.outputs.timestamp, 'rc') || '' }}
 
     - name: dotnet pack
       run: | 
