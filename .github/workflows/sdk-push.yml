@@ -18,8 +18,9 @@ jobs:
       timestamp: ${{ needs.set-ci-configuration.outputs.timestamp }}
       artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
     secrets: inherit
-  push-package-rc:
-    name: push package rc
+  deployment:
+    name: deploy rc
+    if: ${{ github.ref_name == 'rc' }}
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
@@ -27,19 +28,19 @@ jobs:
       artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
     secrets: inherit
     environment: rc
-  push-package-main:
-    name: push package main
+  deployment:
+    name: deploy main
+    if: ${{ github.ref_name == 'main' }}
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
       nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
       artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
     secrets: inherit
-    environment: main
   create-release:
     name: create release
     if: ${{ github.ref_name == 'main' }}
-    needs: [build-test-pack]
+    needs: [build-test-pack,deployment]
     uses: ./.github/workflows/create-release.yml
     with:
       version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
