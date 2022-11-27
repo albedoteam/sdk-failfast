@@ -20,22 +20,22 @@ jobs:
     secrets: inherit
   push-package-rc:
     name: push package rc
-    environment: rc
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
       nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
       artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
     secrets: inherit
+    environment: rc
   push-package-main:
     name: push package main
-    environment: main
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
       nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
       artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
     secrets: inherit
+    environment: main
   create-release:
     name: create release
     if: ${{ github.ref_name == 'main' }}
