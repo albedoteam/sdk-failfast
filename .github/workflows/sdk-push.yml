@@ -20,6 +20,7 @@ jobs:
     secrets: inherit
   deployment:
     name: deploy
+    runs-on: ubuntu-latest
     environment: ${{ github.ref_name }}
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
