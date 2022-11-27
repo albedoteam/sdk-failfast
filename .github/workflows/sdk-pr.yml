@@ -1,11 +1,34 @@
-name: Albedo Team CI SDK On PR
+name: Albedo Team CI SDK on PR
 
 on:
   pull_request:
     branches: [rc, main]
 
 jobs:
-  build-and-test-on-pr:
-    name: build and test
-    uses: ./.github/workflows/sdk-build-test-and-pack.yml
-    secrets: inherit
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:    
+    - uses: actions/checkout@v3
+      name: checkout
+
+    - name: setup .net
+      uses: actions/setup-dotnet@v3
+
+    - name: dotnet nuget add source github.com/albedoteam
+      run: dotnet nuget add source $source -n github --username albedocodes --password $api_key --store-password-in-clear-text
+      env:
+        source: ${{ secrets.NUGET_SOURCE }}
+        api_key: ${{ secrets.NUGET_API_KEY }}
+
+    - run: dotnet restore
+      name: dotnet restore
+
+    - name: dotnet build
+      run: dotnet build --configuration $configuration --no-restore
+      env:
+        configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
+      
+    - name: dotnet test
+      run: dotnet test --no-build --no-restore --verbosity normal
+  

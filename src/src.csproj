@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>AlbedoTeam.Sdk.FailFast</AssemblyName>
         <RootNamespace>AlbedoTeam.Sdk.FailFast</RootNamespace>
-		<Version>1.0.4</Version>
+		<Version>1.0.6</Version>
 	    <RepositoryUrl>https://github.com/albedoteam/sdk-failfast</RepositoryUrl>
     </PropertyGroup>
 
