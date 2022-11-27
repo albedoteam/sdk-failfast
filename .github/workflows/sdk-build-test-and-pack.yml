@@ -30,11 +30,11 @@ on:
         value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
 
 jobs:
-  build-and-test:
-    name: build and test
+  test:
+    name: test and pack
     runs-on: ubuntu-latest
     outputs:
-      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}
+      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
     steps:
 
     - uses: actions/checkout@v3
@@ -57,7 +57,7 @@ jobs:
       env:
         configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
       
-    - name: dotnet test
+    - name: dotnet test --no-build --no-restore
       run: dotnet test --verbosity normal
   
     - name: set nupkg file version
