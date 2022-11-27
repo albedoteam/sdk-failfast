@@ -27,14 +27,14 @@ on:
     outputs:
       nupkg_file_version: 
         description: 'ci project nupkg file version'
-        value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
+        value: ${{ jobs.test-and-pack.outputs.nupkg_file_version }}
 
 jobs:
-  test:
+  test-and-pack:
     name: test and pack
     runs-on: ubuntu-latest
     outputs:
-      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
+      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}
     steps:
 
     - uses: actions/checkout@v3
