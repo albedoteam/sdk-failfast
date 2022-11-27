@@ -34,7 +34,7 @@ jobs:
     name: build and test
     runs-on: ubuntu-latest
     outputs:
-      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}
+      nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
     steps:
 
     - uses: actions/checkout@v3
