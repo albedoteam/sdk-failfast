@@ -30,8 +30,8 @@ on:
         value: ${{ jobs.build-and-test.outputs.nupkg_file_version }}
 
 jobs:
-  build-and-test:
-    name: build and test
+  test:
+    name: test
     runs-on: ubuntu-latest
     outputs:
       nupkg_file_version: ${{ steps.nupkg_file.outputs.version }}${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
