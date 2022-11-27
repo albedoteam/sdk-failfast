@@ -1,0 +1,11 @@
+name: Albedo Team CI SDK On PR
+
+on:
+  pull_request:
+    branches: [rc, main]
+
+jobs:
+  build-and-test-on-pr:
+    name: build and test
+    uses: ./.github/workflows/sdk-build-test-and-pack.yml
+    secrets: inherit

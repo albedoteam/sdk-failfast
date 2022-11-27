@@ -3,18 +3,10 @@ name: Albedo Team CI SDK
 on:
   push: 
     branches: [rc, main]
-  pull_request:
-    branches: [rc, main]
 
 jobs:
-  build-and-test-on-pr:
-    name: build and test on pr
-    if: ${{ github.event_name == 'pull_request' }}
-    uses: ./.github/workflows/sdk-build-test-and-pack.yml
-    secrets: inherit
   set-ci-configuration:
     name: set ci configuration
-    if: ${{ github.event_name == 'push' }}
     uses: ./.github/workflows/set-ci-configuration.yml
     secrets: inherit
   build-test-pack:
