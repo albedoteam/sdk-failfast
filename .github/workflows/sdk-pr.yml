@@ -1,4 +1,4 @@
-name: Albedo Team CI SDK On PR
+name: Albedo Team CI SDK on PR
 
 on:
   pull_request:
