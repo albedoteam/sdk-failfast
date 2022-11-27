@@ -1,4 +1,4 @@
-name: Albedo Team CI SDK
+name: Albedo Team CI SDK on PUSH
 
 on:
   push: 
@@ -20,6 +20,20 @@ jobs:
     secrets: inherit
   push-package:
     name: push package
+    environment: 
+      name: rc
+      url: https://github.com
+    needs: [set-ci-configuration, build-test-pack]
+    uses: ./.github/workflows/push-package.yml
+    with:
+      nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
+      artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
+    secrets: inherit
+  push-package:
+    name: push package
+    environment: 
+      name: main
+      url: https://github.com
     needs: [set-ci-configuration, build-test-pack]
     uses: ./.github/workflows/push-package.yml
     with:
