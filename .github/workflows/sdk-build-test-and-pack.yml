@@ -66,7 +66,7 @@ jobs:
       id: nupkg_file
       env:
         version: ${{ inputs.version }}
-        rc: ${{ github.ref != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
+        rc: ${{ github.ref_name != 'main' && format('.{0}-{1}', inputs.timestamp, 'rc') || '' }}
 
     - name: dotnet pack
       if: ${{ github.event_name == 'push' }}
