@@ -35,7 +35,7 @@ jobs:
     - name: dotnet nuget push
       run: |
         dotnet nuget push \
-        package/$namespace.$version.nupkg \
+        $namespace.$version.nupkg \
         --source $source \
         --api-key $api_key \
         --skip-duplicate \
