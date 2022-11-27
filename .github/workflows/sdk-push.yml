@@ -1,0 +1,36 @@
+name: Albedo Team CI SDK
+
+on:
+  push: 
+    branches: [rc, main]
+
+jobs:
+  set-ci-configuration:
+    name: set ci configuration
+    uses: ./.github/workflows/set-ci-configuration.yml
+    secrets: inherit
+  build-test-pack:
+    name: build, test and pack
+    needs: [set-ci-configuration]
+    uses: ./.github/workflows/sdk-build-test-and-pack.yml
+    with:
+      version: ${{ needs.set-ci-configuration.outputs.version }}
+      timestamp: ${{ needs.set-ci-configuration.outputs.timestamp }}
+      artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
+    secrets: inherit
+  push-package:
+    name: push package
+    needs: [set-ci-configuration, build-test-pack]
+    uses: ./.github/workflows/push-package.yml
+    with:
+      nupkg_file_version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
+      artifact_path_nupkg: ${{ needs.set-ci-configuration.outputs.artifact_path_nupkg }}
+    secrets: inherit
+  create-release:
+    name: create release
+    if: ${{ github.ref_name == 'main' }}
+    needs: [push-package]
+    uses: ./.github/workflows/create-release.yml
+    with:
+      version: ${{ needs.build-test-pack.outputs.nupkg_file_version }}
+    secrets: inherit
