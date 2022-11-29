@@ -5,29 +5,7 @@ on:
     branches: [rc, main]
 
 jobs:
-  test:
-    name: test
-    runs-on: ubuntu-latest
-    steps:    
-    - uses: actions/checkout@v3
-      name: checkout
-
-    - name: setup .net
-      uses: actions/setup-dotnet@v3
-
-    - name: dotnet nuget add source github.com/albedoteam
-      run: dotnet nuget add source $source -n github --username albedocodes --password $api_key --store-password-in-clear-text
-      env:
-        source: ${{ secrets.NUGET_SOURCE }}
-        api_key: ${{ secrets.NUGET_API_KEY }}
-
-    - run: dotnet restore
-      name: dotnet restore
-
-    - name: dotnet build
-      run: dotnet build --configuration $configuration --no-restore
-      env:
-        configuration: ${{ github.ref_name == 'main' && 'Release' || 'Debug' }}
-      
-    - name: dotnet test
-      run: dotnet test --no-build --no-restore --verbosity normal
+  api-on-pr:
+    name: SDK on PR
+    uses: albedoteam/workflows/sdk-pr.yml@main
+    secrets: inherits
