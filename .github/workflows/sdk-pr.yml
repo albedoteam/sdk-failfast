@@ -8,4 +8,4 @@ jobs:
   api-on-pr:
     name: SDK on PR
     uses: albedoteam/workflows/.github/workflows/sdk-pr.yml@main
-    secrets: inherits
+    secrets: inherit

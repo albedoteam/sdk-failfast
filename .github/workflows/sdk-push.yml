@@ -8,4 +8,4 @@ jobs:
   api-on-pr:
     name: SDK on Push
     uses: albedoteam/workflows/.github/workflows/sdk-push.yml@main
-    secrets: inherits
+    secrets: inherit
